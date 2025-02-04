@@ -1,4 +1,6 @@
 fastapi>=0.104.0
-uvicorn>=0.24.0
-pydantic>=2.4.2
-python-dotenv>=1.0.0
+uvicorn>=0.24.0 # for the server that loads and serves your application
+pydantic>=2.4.2 # for the data schemas
+python-dotenv>=1.0.0 # for .env compatibility 
+pytest>=7.4.3 # for testing
+httpx>=0.25.0 # for testing
