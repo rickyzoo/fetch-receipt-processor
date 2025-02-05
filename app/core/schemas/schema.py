@@ -1,18 +1,17 @@
-from pydantic import BaseModel, Field, constr, field_validator
+from pydantic import BaseModel, Field, field_validator
 from typing import List
 from datetime import datetime, time
 
 """
 Some relevant Notes:
-. The 'constr' (short for 'constrained' value) class is used to implement the necessary Regex validation for the relevant fields
-    - 'pattern' is the updated parameter name to implement Regex validation ('regex' was deprecated): https://stackoverflow.com/questions/74607041/how-to-do-with-pydantic-regex-validation
+. The ellipsis (...) notation is used to emphasize the fact that a value must be provided for the associated field. The Docs indicate that its usage is discouraged because it doesn't play well with static type checkers but that doesn't seem to be an issue within the scope of this Project (plus being written in Python)
 . Although an example formatting value was provided for the 'purchaseDate' field in the API spec, I wanted to cover other common and potentially possible formats for this field especially because it is coming in as a string value
     - The same logic does NOT apply to the explicitly specified 24-hour 'purchaseTime' field
 """
 
 class Item(BaseModel):
-    shortDescription: constr(pattern=r"^[\w\s\-]+$") = Field(..., description="The Short Product Description for the item") # Allows alphanumeric, space, and hyphen values
-    price: constr(pattern=r"^\d+\.\d{2}$") = Field(..., description="The total price paid for this item") # Constricts a decimal number to exactly 2 decimal places
+    shortDescription: str = Field(..., pattern=r"^[\w\s\-]+$", description="The Short Product Description for the item") # Allows alphanumeric, space, and hyphen values
+    price: str = Field(..., pattern=r"^\d+\.\d{2}$", description="The total price paid for this item") # Constricts a decimal number to exactly 2 decimal places
 
     def get_price_as_float(self) -> float:
         """Convert string price to float for further processing"""
@@ -21,11 +20,11 @@ class Item(BaseModel):
 
 
 class Receipt(BaseModel):
-    retailer: constr(pattern=r"^[\w\s\-&]+$") = Field(..., description="The name of the retailer or store the receipt is from") # Allows alphanumeric, space, hyphen, and ampersand values
+    retailer: str = Field(..., pattern=r"^[\w\s\-&]+$", description="The name of the retailer or store the receipt is from") # Allows alphanumeric, space, hyphen, and ampersand values
     purchaseDate: str = Field(..., description="The date of the purchase printed on the receipt")
     purchaseTime: str = Field(..., description="The time of the purchase printed on the receipt. 24-hour time expected")
     items: List[Item] = Field(..., min_length=1, description="The list of item(s) purchased")
-    total: constr(pattern=r"^\d+\.\d{2}$") = Field(..., description="The total amount paid on the receipt")
+    total: str = Field(..., pattern=r"^\d+\.\d{2}$", description="The total amount paid on the receipt")
 
     @field_validator("purchaseDate")
     def validate_purchase_date(cls, val):
@@ -64,7 +63,7 @@ class Receipt(BaseModel):
 
     
 class PostReceiptResponse(BaseModel):
-    id: constr(pattern=r"^\S+$") # No space characters allowed
+    id: str = Field(..., pattern=r"^\S+$") # No space characters allowed
 
 
 class GetPointsResponse(BaseModel):
