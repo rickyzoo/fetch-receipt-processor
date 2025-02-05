@@ -1,4 +1,4 @@
-fastapi>=0.104.0
+fastapi[standard]>=0.112.0
 uvicorn>=0.24.0 # for the server that loads and serves your application
 pydantic>=2.4.2 # for the data schemas
 python-dotenv>=1.0.0 # for .env compatibility 

@@ -1,7 +1,9 @@
-from datetime import datetime
 import math
-from app.core.schemas.schema import Receipt
 import uuid
+from datetime import datetime
+
+from app.core.schemas.schema import Receipt
+
 
 
 class ReceiptProcessor:
@@ -9,6 +11,8 @@ class ReceiptProcessor:
         # In-memory data store
         self._receipts = {}
 
+    ## Methods for each points addition scenario
+     
     def calculate_points_from_retailer(self, receipt: Receipt) -> int:
         """Add 1 point for every alphanumeric character in the Retailer name"""
         points = 0
@@ -36,7 +40,7 @@ class ReceiptProcessor:
 
         return (len(receipt.items) // 2) * 5
 
-    def calculate_points_from_item_description(self, multiplier: float=0.2, receipt: Receipt) -> int:
+    def calculate_points_from_item_description(self, receipt: Receipt, multiplier: float=0.2) -> int:
         """
         If the trimmed length of the item description is a multiple of 3, multiply the associated price by the multiplier (0.2 for this use-case) and round up to the nearest integer. The result is the points earned for each item
         NOTE that "trimmed length" implies the removal of trailing & leading space characters BUT counts in-between space characters
@@ -82,12 +86,16 @@ class ReceiptProcessor:
 
         return points
 
+
+    ## Methods called in API Endpoints
+
     def sum_of_points(self, receipt: Receipt) -> int:
         """Sum of all earned points for a given Receipt"""
         return sum([
             self.calculate_points_from_retailer(receipt),
             self.calculate_points_from_total(receipt),
             self.calculate_points_from_num_items(receipt),
+            self.calculate_points_from_item_description(receipt),
             self.calculate_points_from_purchase_date(receipt),
             self.calculate_points_from_purchase_time(receipt),
         ])
