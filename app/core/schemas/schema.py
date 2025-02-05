@@ -4,14 +4,14 @@ from datetime import datetime, time
 
 """
 Some relevant Notes:
-. The 'constr' class is used to implement the necessary Regex validation for the relevant fields
+. The 'constr' (short for 'constrained' value) class is used to implement the necessary Regex validation for the relevant fields
 . Although an example formatting value was provided for the 'purchaseDate' field in the API spec, I wanted to cover other common and potentially possible formats for this field especially because it is coming in as a string value
-    - The same logic does NOT apply to the 24-hour constricted 'purchaseTime' field
+    - The same logic does NOT apply to the explicitly specified 24-hour 'purchaseTime' field
 """
 
 class Item(BaseModel):
-    shortDescription: constr(regex=r"^[\w\s\-]+$") = Field(..., description="The Short Product Description for the item")
-    price: constr(regex=r"^\d+\.\d{2}$") = Field(..., description="The total price paid for this item")
+    shortDescription: constr(regex=r"^[\w\s\-]+$") = Field(..., description="The Short Product Description for the item") # Allows alphanumeric, space, and hyphen values
+    price: constr(regex=r"^\d+\.\d{2}$") = Field(..., description="The total price paid for this item") # Constricts a decimal number to exactly 2 decimal places
 
     def get_price_as_float(self) -> float:
         """Convert string price to float for further processing"""
@@ -20,7 +20,7 @@ class Item(BaseModel):
 
 
 class Receipt(BaseModel):
-    retailer: constr(regex=r"^[\w\s\-&]+$") = Field(..., description="The name of the retailer or store the receipt is from")
+    retailer: constr(regex=r"^[\w\s\-&]+$") = Field(..., description="The name of the retailer or store the receipt is from") # Allows alphanumeric, space, hyphen, and ampersand values
     purchaseDate: str = Field(..., description="The date of the purchase printed on the receipt")
     purchaseTime: str = Field(..., description="The time of the purchase printed on the receipt. 24-hour time expected")
     items: List[Item] = Field(..., min_length=1, description="The list of item(s) purchased")
@@ -29,18 +29,18 @@ class Receipt(BaseModel):
     @validator("purchaseDate")
     def validate_purchase_date(cls, val):
         # List of common date formats in the US according to https://en.wikipedia.org/wiki/Date_and_time_notation_in_the_United_States
-        date_formats = [
-            "%B %-d, %Y", # January 1, 2022
-            "%-d %B %Y", # 1 January 2022
+        accepted_date_formats = [
+            "%B %d, %Y", # January 1, 2022
+            "%d %B %Y", # 1 January 2022
             "%m/%d/%Y", # 01/01/2022
             "%Y-%m-%d", # 2022-01-01 (example provided in API spec)
             "%d %m %y", # 01 01 22
             "%d %m %Y", # 01 01 2022
         ]
-        for fmt in date_formats:
+        for fmt in accepted_date_formats:
             try:
                 datetime.strptime(val, fmt)
-                return val # return the original value for further processing if it's in an accepted format
+                return val # Return the original value for further processing if it's in an accepted format
             except ValueError:
                 continue
 
@@ -63,7 +63,7 @@ class Receipt(BaseModel):
 
     
 class ReceiptPostResponse(BaseModel):
-    id: constr(regex=r"^\S+$")
+    id: constr(regex=r"^\S+$") # No space characters allowed
 
 
 class PointsGetResponse(BaseModel):
