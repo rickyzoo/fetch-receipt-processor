@@ -24,7 +24,7 @@ Once the Docker container finishes building and composing, scan the logs and vis
 
 You can test this web service using the Documentation link as mentioned earlier. Expand the `POST` and `GET` API endpoint cards and click the `Try it out` button located in the top-right corner.
 
-There also exists a `test_api.py` file in `fetch-receipt-processor/app/tests`. There are 4 simple tests included.
+There also exists a `test_api.py` file in `fetch-receipt-processor/app/tests`.
 In a new terminal window `cd` into the `tests` subdirectory and run `pytest -s` to run the test suite. Feel free to utilize this file to add other necessary tests.
 
 ### Other
