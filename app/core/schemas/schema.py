@@ -4,7 +4,7 @@ from datetime import datetime, time
 
 """
 Some relevant Notes:
-. The ellipsis (...) notation is used to emphasize the fact that a value must be provided for the associated field. The Docs indicate that its usage is discouraged because it doesn't play well with static type checkers but that doesn't seem to be an issue within the scope of this Project (plus being written in Python)
+. Regex validation is covered using the 'pattern' parameter in the 'Field' class. Pydantic's built-in Error message is returned in the response
 . Although an example formatting value was provided for the 'purchaseDate' field in the API spec, I wanted to cover other common and potentially possible formats for this field especially because it is coming in as a string value
     - The same logic does NOT apply to the explicitly specified 24-hour 'purchaseTime' field
 """
@@ -16,7 +16,6 @@ class Item(BaseModel):
     def get_price_as_float(self) -> float:
         """Convert string price to float for further processing"""
         return float(self.price)
-
 
 
 class Receipt(BaseModel):
