@@ -25,6 +25,9 @@ def validation_exception_handler(request: Request, exc: RequestValidationError):
     return PlainTextResponse(str(error_msg_str), status_code=400)
 
 
+# NOTE that return values in a FastAPI path operation can usually return any native Python datatype such as a dict.
+# By default, FastAPI automatically converts path operation return values into JSON
+
 @app.post("/receipts/process", status_code=200, response_model=PostReceiptResponse)
 def process_receipt(receipt: Receipt) -> Dict[str, str]:
     try:

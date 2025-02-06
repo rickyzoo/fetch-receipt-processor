@@ -14,8 +14,11 @@ class Item(BaseModel):
     price: str = Field(..., pattern=r"^\d+\.\d{2}$", description="The total price paid for this item") # Constricts a decimal number to exactly 2 decimal places
 
     def get_price_as_float(self) -> float:
-        """Convert string price to float for further processing"""
-        return float(self.price)
+        """Convert string price to float for further processing. Handle negative dollar values"""
+        price_as_float = float(self.price)
+        if price_as_float < 0:
+            return 0.00
+        return price_as_float
 
 
 class Receipt(BaseModel):
@@ -57,8 +60,11 @@ class Receipt(BaseModel):
             raise ValueError("Invalid purchaseTime format. Must be HH:MM in 24-hour format")
 
     def get_total_as_float(self) -> float:
-        """Convert string total to float for further processing"""
-        return float(self.total)
+        """Convert string total to float for further processing. Handle negative dollar values"""
+        total_as_float = float(self.total)
+        if total_as_float < 0:
+            return 0.00
+        return total_as_float
 
     
 class PostReceiptResponse(BaseModel):

@@ -5,7 +5,6 @@ from datetime import datetime
 from app.core.schemas.schema import Receipt
 
 
-
 class ReceiptProcessor:
     def __init__(self):
         # In-memory data store
