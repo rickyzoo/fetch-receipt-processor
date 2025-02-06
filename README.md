@@ -29,8 +29,10 @@ In a new terminal window `cd` into the `tests` subdirectory and run `pytest -s` 
 
 ### Other
 
-`Ctrl + C` to kill the Docker containers
-Simply run `docker-compose up` to reboot this app if you've already successfully ran `docker-compose up --build`
+`Ctrl + C` to kill the Docker containers.
+
+Simply run `docker-compose up` to reboot this app if you've already successfully ran `docker-compose up --build`.
+
 Run `deactivate` to deactivate the Python virtual environment
 
 Hope you earned more points than you expected!
