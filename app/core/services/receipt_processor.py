@@ -10,6 +10,9 @@ class ReceiptProcessor:
         # In-memory data store
         self._receipts = {}
 
+        # Receipt_id-to-points cache
+        self._points = {}
+
     ## Methods for each points addition scenario
      
     def calculate_points_from_retailer(self, receipt: Receipt) -> int:
@@ -108,10 +111,16 @@ class ReceiptProcessor:
 
     def get_total_points(self, receipt_id: str) -> int:
         """Get points for a given Receipt by its uniqueID"""
-        receipt = self._receipts.get(receipt_id)
-        if not receipt:
-            return None
+        points = self._points.get(receipt_id) # First check the points cache
+        if not points:
+            receipt = self._receipts.get(receipt_id)
+            if not receipt: # If the Receipt_id is not in the points cache AND does not exist in the receipts cache, then this is an invalid request
+                return None
+            else:
+                total_points = self.sum_of_points(receipt)
+                self._points[receipt_id] = total_points # If the Receipt exists but does not live in the points cache, then this the first GET request for the given receipt_id. Add it to the cache
+                return total_points
 
-        return self.sum_of_points(receipt)
+        return points
 
 

@@ -13,7 +13,7 @@ Clone this repository onto your machine and `cd` into the `fetch-receipt-process
 Once Python v3.9.13 is successfully installed on your machine and you're in the Project's root directory, create a Python virtual environment by running `python3 -m venv .venv`
 
 - To verify you have the correct Python version installed, run `which python` in your terminal.
-  
+
 Run `source .venv/bin/activate` to activate the virtual environment in the Project's root directory
 
 Assuming you have Docker installed, please start your Docker engine.
@@ -34,7 +34,9 @@ In a new terminal window `cd` into the `tests` subdirectory and run `pytest -s` 
 
 Simply run `docker-compose up` to reboot this app if you've already successfully ran `docker-compose up --build`.
 
-Run `deactivate` to deactivate the Python virtual environment
+ALWAYS REMEMBER to activate your virtual environment before editing or running code.
+
+Run `deactivate` to deactivate the Python virtual environment when you're done.
 
 Hope you earned more points than you expected!
 
