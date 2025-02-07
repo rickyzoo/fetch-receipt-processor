@@ -52,7 +52,7 @@ To process JSON data in Go I would define structs with JSON tags to map the JSON
 
 A function would be defined to process and transform the relevant string numerical fields into float or integer data types for further calculation such as the string "price" and "total" fields coming in from the JSON input. This function would use `strconv.ParseFloat()`. Separate structs defining the key-value pairs with the desired data types would be created and used as the Return value of said function. This function will also explicitly return an error when necessary.
 
-To add Regex pattern validation to the relevant fields I would import a package such as `regexp`, create a const that maps each field to its associated Regex pattern, instantiate structs for each validation rule along with a Validator struct that holds all validation rules using a **map**, and define a Validator function that uses the elements previously defined. A function that is used to process the actual incoming JSON would call the Validator function.
+To add Regex pattern validation to the relevant fields I would import a package such as `regexp`, create a const that maps each field to its associated Regex pattern, instantiate structs for each validation rule along with a Validator struct that holds all validation rules using a **map**, and define a Validator function that uses the elements previously defined. The POST API handler function that is used to process the actual incoming JSON would call the Validator function.
 
 The basic data schema structs would live in a separate `models` subdirectory while the field validation code would live in a separate subdirectory called `services` or some equivalent.
 
@@ -62,6 +62,14 @@ The points calculation file would live in the same `services` subdirectory as th
 
 ### In-memory storage
 
-A `memory_store` file would live in a `storage` subdirectory. This file would define a `MemoryStore` struct with key-value pairs. One pair would map the uniqueID string value to the Receipt data model and the other pair would map the uniqueID string value to the points earned (as an integer) for a given Receipt. Functions would also be defined to Store and Retrieve data from the cache. More specifically, a `StoreReceipt`, a `StorePoints` and a `GetPoints` function would be defined, each using `mutex.Lock()` and `defer mutex.Unlock()` to make sure only one Goroutine can access a given variable at a time. A function that returns the address of the `MemoryStore` would also be defined in this file to be used in the main.go file.
+A `memory_store` file would live in a `storage` subdirectory. This file would define a `ReceiptMemoryStore` struct with key-value pairs. One pair would map the uniqueID string value to the Receipt data model and the other pair would map the uniqueID string value to the points earned (as an integer) for a given Receipt. Functions would also be defined to Store and Retrieve data from the cache. More specifically, a `StoreReceipt`, a `StorePoints` and a `GetPoints` function would be defined, each using `mutex.Lock()` and `defer mutex.Unlock()` to make sure only one Goroutine can access a given variable at a time. A function that returns the address of the `ReceiptMemoryStore` would also be defined in this file to be used in the main.go file.
 
 ### API Handlers
+
+I would use the Gin Web framework to write my API handlers. The `POST` endpoint would take a gin.Context parameter. This function would start by declaring a variable of the expected post-parsed Go struct defined in the `models` subdirectory and calling the Data Validator function defined in the `services` subdirectory. A `gin.Context.BindJSON` would be called on the return value of the Data Validator function. If no error is returned then we would proceed to the subsequent steps of generating a uniqueID string value, storing the unqiueID-to-Receipt key-value pair in the in-memory data store, and calling the `CalculatePoints` function. We would also store the uniqueID-to-Points key-value pair in the in-memory store.
+
+The `GET` endpoint would also take a gin.Context parameter and retrieve the uniqueID value from the API request path. The uniqueID value would then be passed into the `GetPoints` function defined in the `memory_store` file.
+
+Proper HTTP status codes and response messages will be returned via `http.StatusOK` (a 200) or `http.StatusNotFound` (a 404).
+
+The `main.go` file with a `main()` function would tie everything together and explicitly define the request paths for each endpoint.
