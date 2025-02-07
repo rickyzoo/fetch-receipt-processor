@@ -30,7 +30,7 @@ In a new terminal window `cd` into the `tests` subdirectory and run `pytest -s` 
 
 ### Other
 
-`Ctrl + C` to kill the Docker containers.
+`Ctrl + C` and then run `docker-compose down` to kill the Docker containers.
 
 Simply run `docker-compose up` to reboot this app if you've already successfully ran `docker-compose up --build`.
 
@@ -43,3 +43,5 @@ Hope you earned more points than you expected!
 ## Python-to-Golang
 
 While Go is the explicitly stated backend language of choice at Fetch Rewards, I come with limited Go experience (I'm familiar with some concepts). Python has been my main programming language since I started coding 3 years ago and was the backend language of choice for the app I worked on while working as a Full-stack engineer at my previous role. In order to properly capture my engineering and programming knowledge I chose to complete this project using Python and the FastAPI Framework. However, detailed below are a few notable things I would do if I were to refactor my solution from Python to Go.
+
+
