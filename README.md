@@ -14,7 +14,7 @@ Clone this repository onto your machine and `cd` into the `fetch-receipt-process
 
 Once Python v3.9.13 is successfully installed on your machine and you're in the Project's root directory, create a Python virtual environment by running `python3 -m venv .venv`
 
-- To verify you have the correct Python version installed, run `which python` in your terminal.
+- To verify you have the correct Python version installed, run `python3 --version` in your terminal.
 
 Run `source .venv/bin/activate` to activate the virtual environment in the Project's root directory
 

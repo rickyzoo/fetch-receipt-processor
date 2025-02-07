@@ -7,10 +7,10 @@ from app.core.schemas.schema import Receipt
 
 class ReceiptProcessor:
     def __init__(self):
-        # In-memory data store
+        # Receipts cache to store post-parsed Receipts data for Data verification purposes
         self._receipts = {}
 
-        # Receipt_id-to-points cache
+        # Points cache for the GET endpoint
         self._points = {}
 
     ## Methods for each points addition scenario
@@ -103,24 +103,20 @@ class ReceiptProcessor:
         ])
 
     def process_receipt(self, receipt: Receipt) -> str:
-        """Process a given Receipt, generate a uniqueID, and return it"""
+        """Process a given Receipt, generate a uniqueID, and return it. Calculate points and store in points cache"""
         receipt_id = str(uuid.uuid4()) # .uuid4 creates a random UUID value
-        self._receipts[receipt_id] = receipt # Store k-v pair in in-memory data store
+        self._receipts[receipt_id] = receipt 
+
+        # Calculate points and store in Points cache
+        total_points = self.sum_of_points(receipt)
+        self._points[receipt_id] = total_points
         
         return receipt_id
 
     def get_total_points(self, receipt_id: str) -> int:
         """Get points for a given Receipt by its uniqueID"""
-        points = self._points.get(receipt_id) # First check the points cache
+        points = self._points.get(receipt_id)
         if not points:
-            receipt = self._receipts.get(receipt_id)
-            if not receipt: # If the Receipt_id is not in the points cache AND does not exist in the receipts cache, then this is an invalid request
-                return None
-            else:
-                total_points = self.sum_of_points(receipt)
-                self._points[receipt_id] = total_points # If the Receipt exists but does not live in the points cache, then this the first GET request for the given receipt_id. Add it to the cache
-                return total_points
+            return None
 
         return points
-
-
